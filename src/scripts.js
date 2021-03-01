@@ -1,4 +1,3 @@
-
 const TILE_SIZE = 48;
 const HELMET_OFFSET = 12;
 const GAME_SIZE = TILE_SIZE * 20;
@@ -13,6 +12,7 @@ root.style.setProperty('--game-size',`${GAME_SIZE}px`) // 960px
 function createBoard(){
   const boardElement = document.getElementById('board');
   const elements = [];
+  var cont = 50;
 
   function createElement(options){
     let {item, top, left} = options;
@@ -117,7 +117,7 @@ function createBoard(){
         currentElement.currentPosition = newPosition;
         htmlElement.style.top = `${newPosition.top}px`;
         htmlElement.style.left = `${newPosition.left}px`;
-
+        contPassos(currentElement.item);
         validateConflicts(currentElement, conflitItem);
       }
     }
@@ -128,6 +128,23 @@ function createBoard(){
 
   }
 
+  function contPassos(item){
+
+    if(item === 'hero'){ // Somente decrementa os passos para o Hero
+
+      if(cont <= 0 ){      // Quando chegar a Zero, irá resetar
+        setTimeout(() => {
+          alert('Você atingiu o número de passos máximo.');
+          location.reload();
+        },10);
+      }
+
+      cont--;
+      console.log("Passos",cont);
+      document.getElementById('steps').textContent = `Passos : ${cont}`; 
+    }
+  }
+  
   function createItem(options){
     createElement(options);
   }
@@ -170,6 +187,9 @@ function createBoard(){
 
 }
 const board =  createBoard();
+
+// -- Criando Itens
+
 const number = Math.floor(Math.random()*5)+15; //Varia de 15 a 20
 // item -> mini-demon | chest | hero | trap
 // top -> number
@@ -196,6 +216,8 @@ console.log(positionTop.length);
 
 board.createHero({ top: TILE_SIZE * 16, left: TILE_SIZE * 2});
 
+// --- Criando mini-demons e traps
+
 function validateNumber(left, top){
   for(var i = 0; i < positionTop.length; i++){
     if(positionTop[i] === top && positionLeft[i] === left){
@@ -205,8 +227,6 @@ function validateNumber(left, top){
   return true;
 }
 
-//left 1-18
-//top 2-15
 for(var i = 0; i < number; i++){
   var numbertop = Math.floor(Math.random()*13)+2;
   var numberleft = Math.floor(Math.random()*18)+1;
@@ -238,4 +258,10 @@ for(var i = 0; i < number- 5; i++){
   }else{
     i--;
   }
+}
+
+//--- Função reset
+
+function reset(){  
+  location.reload(); // -- https://developer.mozilla.org/pt-BR/docs/Web/API/Location/reload
 }
